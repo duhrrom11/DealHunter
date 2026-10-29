@@ -1,10 +1,22 @@
-import sys
+import pandas as pd
+import requests
 
 
-def main():
-  print("DealHunter Bot erfolgreich gestartet!")
-  print("Python läuft stabil auf der GitHub Cloud.")
+def run_dealhunter():
+  print("=== DealHunter Bot gestartet ===")
+
+  # Test, ob pandas und requests reibungslos funktionieren
+  data = {"Modul": ["eBay Feed", "Gemini KI", "Telegram Bot"], "Status": [
+      "Bereit",
+      "Bereit",
+      "Bereit",
+  ]}
+  df = pd.DataFrame(data)
+
+  print("\nSystem-Status:")
+  print(df)
+  print("\n=== DealHunter Durchlauf erfolgreich beendet ===")
 
 
 if __name__ == "__main__":
-  main()
+  run_dealhunter()
