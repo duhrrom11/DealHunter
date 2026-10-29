@@ -1,2 +1,4 @@
 requests
 pandas
+google-generativeai
+beautifulsoup4
