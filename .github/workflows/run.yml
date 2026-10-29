@@ -1,9 +1,9 @@
 name: DealHunter Automation
 
 on:
+  workflow_dispatch:
   schedule:
-    - cron: '0 8 * * *' # Läuft jeden Tag um 8:00 Uhr UTC
-  workflow_dispatch: # Erlaubt es dir, das Skript jederzeit manuell mit einem Klick zu starten
+    - cron: '0 8 * * *'
 
 jobs:
   run-dealhunter:
