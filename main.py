@@ -1,7 +1,15 @@
 import base64
 import os
-from google import genai
+import google.generativeai as genai
 import requests
+
+# Gemini mit dem API-Key konfigurieren
+gemini_key = os.environ.get("GEMINI_API_KEY")
+if gemini_key:
+  genai.configure(api_key=gemini_key)
+  ai_model = genai.GenerativeModel("gemini-1.5-flash")
+else:
+  ai_model = None
 
 
 def get_ebay_token():
@@ -34,23 +42,17 @@ def get_ebay_token():
 
 
 def analyze_with_gemini(title, price):
-  gemini_key = os.environ.get("GEMINI_API_KEY")
-  if not gemini_key:
+  if not ai_model:
     return "KI-Schlüssel nicht hinterlegt."
 
+  prompt = (
+      f"Analysiere dieses eBay-Angebot:\nTitel: '{title}'\nPreis: {price}"
+      " EUR\n\nBeurteile kurz und knackig (max. 2 Sätze):\n1. Gibt es"
+      " Auffälligkeiten (Preisfehler, Tippfehler)?\n2. Lohnt sich der Blick"
+      " darauf?"
+  )
   try:
-    # Verwendung des aktuellen Modells gemäß API-Hinweis
-    client = genai.Client(api_key=gemini_key)
-    prompt = (
-        f"Analysiere dieses eBay-Angebot:\nTitel: '{title}'\nPreis: {price}"
-        " EUR\n\nBeurteile kurz und knackig (max. 2 Sätze):\n1. Gibt es"
-        " Auffälligkeiten (Preisfehler, Tippfehler)?\n2. Lohnt sich der Blick"
-        " darauf?"
-    )
-
-    response = client.models.generate_content(
-        model="gemini-3.8-flash", contents=prompt
-    )
+    response = ai_model.generate_content(prompt)
     if response and response.text:
       return response.text.strip().replace("\n", " ")
     else:
@@ -61,6 +63,7 @@ def analyze_with_gemini(title, price):
 
 
 def fetch_ebay_deals(token):
+  # Wir scannen wichtige eBay-Kategorien nach den neuesten Inseraten
   category_ids = ["293", "888"]  # 293 = Elektronik, 888 = Heimwerker
   all_deals = []
 
@@ -133,4 +136,76 @@ def generate_html(deals):
         body {{
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-main);
-            color:
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+        }}
+        .container {{ max-width: 1000px; margin: 0 auto; }}
+        header {{
+            text-align: center; padding: 40px 20px; background: var(--bg-card);
+            border-radius: 12px; margin-bottom: 30px; border-bottom: 3px solid var(--accent);
+        }}
+        h1 {{ color: var(--accent); margin: 0 0 10px 0; font-size: 2.2em; }}
+        p.subtitle {{ color: var(--text-muted); font-size: 1.1em; margin: 0; }}
+        .status-badge {{
+            display: inline-block; background: var(--highlight); color: #fff;
+            padding: 6px 14px; border-radius: 20px; font-size: 0.85em; margin-top: 15px; font-weight: bold;
+        }}
+        .deals-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }}
+        .deal-card {{
+            background: var(--bg-card); border-radius: 12px; padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); display: flex; flex-direction: column;
+            justify-content: space-between; border: 1px solid rgba(255,255,255,0.05);
+        }}
+        .deal-title {{ font-size: 1.1em; font-weight: bold; margin-bottom: 10px; color: var(--text-main); }}
+        .deal-price {{ font-size: 1.4em; color: var(--accent); font-weight: bold; margin-bottom: 15px; }}
+        .ai-box {{
+            background: rgba(44, 76, 62, 0.2); border-left: 3px solid var(--highlight);
+            padding: 10px; border-radius: 4px; font-size: 0.9em; color: var(--text-muted); margin-bottom: 15px;
+        }}
+        .ai-box strong {{ color: var(--text-main); }}
+        .btn {{
+            display: block; text-align: center; background: var(--accent); color: #1a1d20;
+            padding: 10px; border-radius: 6px; text-decoration: none; font-weight: bold;
+            transition: opacity 0.2s;
+        }}
+        .btn:hover {{ opacity: 0.9; }}
+        footer {{ text-align: center; margin-top: 40px; color: var(--text-muted); font-size: 0.9em; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DealHunter</h1>
+            <p class="subtitle">Der automatisierte Radar für eBay-Preisfehler & KI-analysierte Deals.</p>
+            <div class="status-badge">🟢 Live aktualisiert via GitHub & Gemini</div>
+        </header>
+
+        <div class="deals-grid">
+            {cards_html}
+        </div>
+
+        <footer>
+            &copy; 2026 DealHunter. Automatisiert gesteuert über die Cloud.
+        </footer>
+    </div>
+</body>
+</html>"""
+
+  with open("index.html", "w", encoding="utf-8") as f:
+    f.write(html_content)
+  print("index.html erfolgreich mit Live-Daten und KI-Analyse aktualisiert!")
+
+
+def main():
+  print("=== DealHunter Final gestartet ===")
+  token = get_ebay_token()
+  if token:
+    deals = fetch_ebay_deals(token)
+    if deals:
+      generate_html(deals)
+  print("=== Durchlauf beendet ===")
+
+
+if __name__ == "__main__":
+  main()
