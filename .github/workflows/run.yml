@@ -23,7 +23,7 @@ jobs:
       - name: Abhängigkeiten installieren
         run: |
           python -m pip install --upgrade pip
-          pip install requests pandas google-generativeai
+          pip install requests pandas google-genai
 
       - name: Hauptskript ausführen
         env:
