@@ -3,10 +3,11 @@ import os
 import google.generativeai as genai
 import requests
 
-# Gemini konfigurieren (aktualisierter Modellname)
+# Gemini konfigurieren
 gemini_key = os.environ.get("GEMINI_API_KEY")
 if gemini_key:
   genai.configure(api_key=gemini_key)
+  # Wir nutzen hier den stabilen Standardnamen
   ai_model = genai.GenerativeModel("gemini-1.5-flash")
 else:
   ai_model = None
@@ -43,19 +44,22 @@ def get_ebay_token():
 
 def analyze_with_gemini(title, price):
   if not ai_model:
-    return "KI-Analyse nicht verfügbar."
+    return "KI-Schlüssel fehlt."
 
   prompt = (
       f"Analysiere dieses eBay-Angebot:\nTitel: '{title}'\nPreis: {price}"
       " EUR\n\nBeurteile kurz und knackig (max. 2 Sätze):\n1. Gibt es"
-      " Auffälligkeiten (Preisfehler, Tippfehler, Schnäppchen-Potenzial)?\n2."
-      " Lohnt sich der Blick darauf?"
+      " Auffälligkeiten (Preisfehler, Tippfehler)?\n2. Lohnt sich der Blick"
+      " darauf?"
   )
   try:
     response = ai_model.generate_content(prompt)
     return response.text.strip().replace("\n", " ")
   except Exception as e:
-    return f"KI-Hinweis: Prüfung übersprungen."
+    # Wir geben den echten Fehler aus, damit wir ihn sehen
+    fehler_text = str(e)
+    print(f"Gemini API Fehler bei '{title}': {fehler_text}")
+    return f"KI-Fehler: {fehler_text[:60]}..."
 
 
 def fetch_ebay_deals(token):
