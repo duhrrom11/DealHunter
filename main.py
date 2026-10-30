@@ -3,13 +3,10 @@ import os
 import google.generativeai as genai
 import requests
 
-# Gemini konfigurieren
+# Gemini mit dem API-Key konfigurieren
 gemini_key = os.environ.get("GEMINI_API_KEY")
 if gemini_key:
   genai.configure(api_key=gemini_key)
-  ai_model = genai.GenerativeModel("gemini-1.5-flash")
-else:
-  ai_model = None
 
 
 def get_ebay_token():
@@ -42,7 +39,7 @@ def get_ebay_token():
 
 
 def analyze_with_gemini(title, price):
-  if not ai_model:
+  if not gemini_key:
     return "KI-Schlüssel nicht hinterlegt."
 
   prompt = (
@@ -51,20 +48,24 @@ def analyze_with_gemini(title, price):
       " Auffälligkeiten (Preisfehler, Tippfehler)?\n2. Lohnt sich der Blick"
       " darauf?"
   )
-  try:
-    response = ai_model.generate_content(prompt)
-    if response and response.text:
-      return response.text.strip().replace("\n", " ")
-    else:
-      return "Keine Antwort von Gemini erhalten."
-  except Exception as e:
-    # Gibt den echten Fehler im GitHub Actions Log aus
-    err_msg = str(e)
-    print(f"--- GEMINI FEHLER bei '{title}': {err_msg} ---")
-    return f"KI-Fehler: {err_msg[:50]}"
+
+  # Automatischer Fallback: Testet gängige Modelle der Reihe nach durch
+  models_to_try = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-1.0-pro"]
+
+  for model_name in models_to_try:
+    try:
+      model = genai.GenerativeModel(model_name)
+      response = model.generate_content(prompt)
+      if response and response.text:
+        return response.text.strip().replace("\n", " ")
+    except Exception as e:
+      continue
+
+  return "KI-Analyse temporär nicht verfügbar."
 
 
 def fetch_ebay_deals(token):
+  # Wir scannen wichtige eBay-Kategorien nach den neuesten Inseraten
   category_ids = ["293", "888"]  # 293 = Elektronik, 888 = Heimwerker
   all_deals = []
 
@@ -199,7 +200,7 @@ def generate_html(deals):
 
 
 def main():
-  print("=== DealHunter Diagnose gestartet ===")
+  print("=== DealHunter Final mit Modell-Fallback gestartet ===")
   token = get_ebay_token()
   if token:
     deals = fetch_ebay_deals(token)
