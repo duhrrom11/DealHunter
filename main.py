@@ -1,12 +1,7 @@
 import base64
 import os
-import google.generativeai as genai
+from google import genai
 import requests
-
-# Gemini mit dem API-Key konfigurieren
-gemini_key = os.environ.get("GEMINI_API_KEY")
-if gemini_key:
-  genai.configure(api_key=gemini_key)
 
 
 def get_ebay_token():
@@ -39,29 +34,30 @@ def get_ebay_token():
 
 
 def analyze_with_gemini(title, price):
+  gemini_key = os.environ.get("GEMINI_API_KEY")
   if not gemini_key:
     return "KI-Schlüssel nicht hinterlegt."
 
-  prompt = (
-      f"Analysiere dieses eBay-Angebot:\nTitel: '{title}'\nPreis: {price}"
-      " EUR\n\nBeurteile kurz und knackig (max. 2 Sätze):\n1. Gibt es"
-      " Auffälligkeiten (Preisfehler, Tippfehler)?\n2. Lohnt sich der Blick"
-      " darauf?"
-  )
+  try:
+    # Offizieller, aktueller Google GenAI Client
+    client = genai.Client(api_key=gemini_key)
+    prompt = (
+        f"Analysiere dieses eBay-Angebot:\nTitel: '{title}'\nPreis: {price}"
+        " EUR\n\nBeurteile kurz und knackig (max. 2 Sätze):\n1. Gibt es"
+        " Auffälligkeiten (Preisfehler, Tippfehler)?\n2. Lohnt sich der Blick"
+        " darauf?"
+    )
 
-  # Automatischer Fallback: Testet gängige Modelle der Reihe nach durch
-  models_to_try = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-1.0-pro"]
-
-  for model_name in models_to_try:
-    try:
-      model = genai.GenerativeModel(model_name)
-      response = model.generate_content(prompt)
-      if response and response.text:
-        return response.text.strip().replace("\n", " ")
-    except Exception as e:
-      continue
-
-  return "KI-Analyse temporär nicht verfügbar."
+    response = client.models.generate_content(
+        model="gemini-2.0-flash", contents=prompt
+    )
+    if response and response.text:
+      return response.text.strip().replace("\n", " ")
+    else:
+      return "Keine Antwort von Gemini erhalten."
+  except Exception as e:
+    print(f"Gemini API Fehler bei '{title}': {str(e)}")
+    return "KI-Analyse temporär nicht verfügbar."
 
 
 def fetch_ebay_deals(token):
@@ -196,11 +192,11 @@ def generate_html(deals):
 
   with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
-  print("index.html erfolgreich aktualisiert!")
+  print("index.html erfolgreich mit Live-Daten und Gemini-Analyse aktualisiert!")
 
 
 def main():
-  print("=== DealHunter Final mit Modell-Fallback gestartet ===")
+  print("=== DealHunter GenAI gestartet ===")
   token = get_ebay_token()
   if token:
     deals = fetch_ebay_deals(token)
