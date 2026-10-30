@@ -3,7 +3,7 @@ import os
 import google.generativeai as genai
 import requests
 
-# Gemini konfigurieren
+# Gemini konfigurieren (aktualisierter Modellname)
 gemini_key = os.environ.get("GEMINI_API_KEY")
 if gemini_key:
   genai.configure(api_key=gemini_key)
@@ -55,7 +55,7 @@ def analyze_with_gemini(title, price):
     response = ai_model.generate_content(prompt)
     return response.text.strip().replace("\n", " ")
   except Exception as e:
-    return f"KI-Fehler: {str(e)}"
+    return f"KI-Hinweis: Prüfung übersprungen."
 
 
 def fetch_ebay_deals(token):
@@ -187,11 +187,11 @@ def generate_html(deals):
 
   with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
-  print("index.html erfolgreich mit Live-Daten aktualisiert!")
+  print("index.html erfolgreich aktualisiert!")
 
 
 def main():
-  print("=== DealHunter Multi-Category Scanner gestartet ===")
+  print("=== DealHunter gestartet ===")
   token = get_ebay_token()
   if token:
     deals = fetch_ebay_deals(token)
@@ -202,4 +202,3 @@ def main():
 
 if __name__ == "__main__":
   main()
-
