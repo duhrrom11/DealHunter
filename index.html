@@ -12,9 +12,7 @@
             --text-main: #f4f4f2;
             --text-muted: #b0b3b8;
             --highlight: #2c4c3e;
-            --glitch-red: #e06c75;
         }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-main);
@@ -22,155 +20,117 @@
             margin: 0;
             padding: 20px;
         }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
+        .container { max-width: 1000px; margin: 0 auto; }
         header {
-            text-align: center;
-            padding: 40px 20px;
-            background: var(--bg-card);
-            border-radius: 12px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            border-bottom: 3px solid var(--accent);
+            text-align: center; padding: 40px 20px; background: var(--bg-card);
+            border-radius: 12px; margin-bottom: 30px; border-bottom: 3px solid var(--accent);
         }
-
-        h1 {
-            color: var(--accent);
-            margin: 0 0 10px 0;
-            font-size: 2.2em;
-        }
-
-        p.subtitle {
-            color: var(--text-muted);
-            font-size: 1.1em;
-            margin: 0;
-        }
-
+        h1 { color: var(--accent); margin: 0 0 10px 0; font-size: 2.2em; }
+        p.subtitle { color: var(--text-muted); font-size: 1.1em; margin: 0; }
         .status-badge {
-            display: inline-block;
-            background: var(--highlight);
-            color: #fff;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            margin-top: 15px;
-            font-weight: bold;
+            display: inline-block; background: var(--highlight); color: #fff;
+            padding: 6px 14px; border-radius: 20px; font-size: 0.85em; margin-top: 15px; font-weight: bold;
         }
-
-        .deals-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
+        .deals-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
         .deal-card {
-            background: var(--bg-card);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: transform 0.2s ease;
+            background: var(--bg-card); border-radius: 12px; padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); display: flex; flex-direction: column;
+            justify-content: space-between; border: 1px solid rgba(255,255,255,0.05);
         }
-
-        .deal-card:hover {
-            transform: translateY(-3px);
-            border-color: var(--accent);
-        }
-
-        .deal-title {
-            font-size: 1.1em;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: var(--text-main);
-        }
-
-        .deal-price {
-            font-size: 1.4em;
-            color: var(--accent);
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
+        .deal-title { font-size: 1.1em; font-weight: bold; margin-bottom: 10px; color: var(--text-main); }
+        .deal-price { font-size: 1.4em; color: var(--accent); font-weight: bold; margin-bottom: 15px; }
         .ai-box {
-            background: rgba(44, 76, 62, 0.2);
-            border-left: 3px solid var(--highlight);
-            padding: 10px;
-            border-radius: 4px;
-            font-size: 0.9em;
-            color: var(--text-muted);
-            margin-bottom: 15px;
+            background: rgba(44, 76, 62, 0.2); border-left: 3px solid var(--highlight);
+            padding: 10px; border-radius: 4px; font-size: 0.9em; color: var(--text-muted); margin-bottom: 15px;
         }
-
-        .ai-box strong {
-            color: var(--text-main);
-        }
-
+        .ai-box strong { color: var(--text-main); }
         .btn {
-            display: block;
-            text-align: center;
-            background: var(--accent);
-            color: #1a1d20;
-            padding: 10px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: opacity 0.2s;
+            display: block; text-align: center; background: var(--accent); color: #1a1d20;
+            padding: 10px; border-radius: 6px; text-decoration: none; font-weight: bold;
         }
-
-        .btn:hover {
-            opacity: 0.9;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            color: var(--text-muted);
-            font-size: 0.9em;
-        }
+        footer { text-align: center; margin-top: 40px; color: var(--text-muted); font-size: 0.9em; }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>DealHunter</h1>
-            <p class="subtitle">Der automatisierte Radar für eBay-Preisfehler, Tippfehler-Glitches & versteckte Schätze.</p>
-            <div class="status-badge">🟢 Live-Scanner aktiv</div>
+            <p class="subtitle">Der automatisierte Radar für eBay-Preisfehler & KI-analysierte Deals.</p>
+            <div class="status-badge">🟢 Live aktualisiert via GitHub & Gemini</div>
         </header>
 
-        <!-- Beispiel-Deals (Später füllt dein Python-Skript diese Sektion automatisch) -->
         <div class="deals-grid">
-            <div class="deal-card">
-                <div>
-                    <div class="deal-title">Playstatin 5 Konsole (Tippfehler-Fund)</div>
-                    <div class="deal-price">249,00 EUR <span style="font-size: 0.6em; color: var(--glitch-red);">⚡ -50% Glitch</span></div>
-                    <div class="ai-box">
-                        <strong>Gemini AI:</strong> Klassischer Tippfehler im Titel ("Playstatin"). Kaum Suchvolumen für normale Käufer. Extrem günstiger Preis im Vergleich zum Marktwert.
-                    </div>
+            
+        <div class="deal-card">
+            <div>
+                <div class="deal-title">25 Jahre Apple iPod Classic, 5. Generation, 30 GB</div>
+                <div class="deal-price">98.00 EUR <span style="font-size: 0.6em; color: var(--accent);">⚡ Live-Fund</span></div>
+                <div class="ai-box">
+                    <strong>Gemini AI:</strong> KI-Fehler: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
                 </div>
-                <a href="#" class="btn">Zum eBay-Angebot</a>
             </div>
-
-            <div class="deal-card">
-                <div>
-                    <div class="deal-title">Alte Uhr von Opa - verm. Omega / Vintage</div>
-                    <div class="deal-price">45,00 EUR <span style="font-size: 0.6em; color: var(--accent);">💎 Dachboden-Fund</span></div>
-                    <div class="ai-box">
-                        <strong>Gemini AI:</strong> Verkäufer weiß offensichtlich nicht, was er anbietet. Anhand der Werk-Untersicht auf dem vierten Bild handelt es sich um eine unterschätzte Vintage-Mechanik.
-                    </div>
+            <a href="https://www.ebay.de/itm/257824444950?hash=item3c0788d216:g:-isAAeSwCZlq498q" target="_blank" class="btn">Zum eBay-Angebot</a>
+        </div>
+        
+        <div class="deal-card">
+            <div>
+                <div class="deal-title">TMH-H 200W 5x20mm LED TMH-H180 Hybrid Moving-Head Spot Wash Eurolite 51786085</div>
+                <div class="deal-price">896.89 EUR <span style="font-size: 0.6em; color: var(--accent);">⚡ Live-Fund</span></div>
+                <div class="ai-box">
+                    <strong>Gemini AI:</strong> KI-Fehler: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
                 </div>
-                <a href="#" class="btn">Zum eBay-Angebot</a>
             </div>
+            <a href="https://www.ebay.de/itm/267827705814?hash=item3e5bc677d6:g:bV0AAeSw50Zq498B" target="_blank" class="btn">Zum eBay-Angebot</a>
+        </div>
+        
+        <div class="deal-card">
+            <div>
+                <div class="deal-title">Beats by Dr. Dre Beats Studio3 Over-Ear Bluetooth Kopfhörer Schwarz MX3X2ZM/A</div>
+                <div class="deal-price">90.00 EUR <span style="font-size: 0.6em; color: var(--accent);">⚡ Live-Fund</span></div>
+                <div class="ai-box">
+                    <strong>Gemini AI:</strong> KI-Fehler: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+                </div>
+            </div>
+            <a href="https://www.ebay.de/itm/227589287127?hash=item34fd60ecd7:g:bTwAAeSwkiFq498a" target="_blank" class="btn">Zum eBay-Angebot</a>
+        </div>
+        
+        <div class="deal-card">
+            <div>
+                <div class="deal-title">Backpack Cooler Tactical Insulated Large Capacity JOYHILL BLACK Lunch Bag ARMY</div>
+                <div class="deal-price">34.11 EUR <span style="font-size: 0.6em; color: var(--accent);">⚡ Live-Fund</span></div>
+                <div class="ai-box">
+                    <strong>Gemini AI:</strong> KI-Fehler: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+                </div>
+            </div>
+            <a href="https://www.ebay.de/itm/920086092176?hash=itemd639679990:g:Wh8AAOSwe0hnB92X" target="_blank" class="btn">Zum eBay-Angebot</a>
+        </div>
+        
+        <div class="deal-card">
+            <div>
+                <div class="deal-title">New Era LA Dodgers 9FORTY Cream Burgundy Two Tone Adjustable Baseball Cap</div>
+                <div class="deal-price">23.88 EUR <span style="font-size: 0.6em; color: var(--accent);">⚡ Live-Fund</span></div>
+                <div class="ai-box">
+                    <strong>Gemini AI:</strong> KI-Fehler: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+                </div>
+            </div>
+            <a href="https://www.ebay.de/itm/327429586716?hash=item4c3c52ff1c:g:EhQAAeSw8oNq4-Ax" target="_blank" class="btn">Zum eBay-Angebot</a>
+        </div>
+        
+        <div class="deal-card">
+            <div>
+                <div class="deal-title">Mizuno JPX 925 Hot Metal Eisensatz 6-9i Pw 5tlg RAUNE i90 Graphit R RH...</div>
+                <div class="deal-price">825.69 EUR <span style="font-size: 0.6em; color: var(--accent);">⚡ Live-Fund</span></div>
+                <div class="ai-box">
+                    <strong>Gemini AI:</strong> KI-Fehler: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+                </div>
+            </div>
+            <a href="https://www.ebay.de/itm/147657376377?hash=item226110c279:i:147657376377" target="_blank" class="btn">Zum eBay-Angebot</a>
+        </div>
+        
         </div>
 
         <footer>
-            &copy; 2026 DealHunter. Powered by GitHub Actions & Gemini AI.
+            &copy; 2026 DealHunter. Automatisiert gesteuert über die Cloud.
         </footer>
     </div>
 </body>
