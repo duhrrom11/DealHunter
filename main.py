@@ -3,7 +3,7 @@ import os
 import google.generativeai as genai
 import requests
 
-# Gemini mit dem API-Key konfigurieren
+# Gemini konfigurieren
 gemini_key = os.environ.get("GEMINI_API_KEY")
 if gemini_key:
   genai.configure(api_key=gemini_key)
@@ -58,12 +58,13 @@ def analyze_with_gemini(title, price):
     else:
       return "Keine Antwort von Gemini erhalten."
   except Exception as e:
-    print(f"Gemini API Fehler bei '{title}': {str(e)}")
-    return "KI-Analyse temporär nicht verfügbar."
+    # Gibt den echten Fehler im GitHub Actions Log aus
+    err_msg = str(e)
+    print(f"--- GEMINI FEHLER bei '{title}': {err_msg} ---")
+    return f"KI-Fehler: {err_msg[:50]}"
 
 
 def fetch_ebay_deals(token):
-  # Wir scannen wichtige eBay-Kategorien nach den neuesten Inseraten
   category_ids = ["293", "888"]  # 293 = Elektronik, 888 = Heimwerker
   all_deals = []
 
@@ -194,11 +195,11 @@ def generate_html(deals):
 
   with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
-  print("index.html erfolgreich mit Live-Daten und KI-Analyse aktualisiert!")
+  print("index.html erfolgreich aktualisiert!")
 
 
 def main():
-  print("=== DealHunter Final gestartet ===")
+  print("=== DealHunter Diagnose gestartet ===")
   token = get_ebay_token()
   if token:
     deals = fetch_ebay_deals(token)
