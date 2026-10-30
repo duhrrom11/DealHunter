@@ -1,6 +1,15 @@
 import base64
 import os
+import google.generativeai as genai
 import requests
+
+# Gemini konfigurieren
+gemini_key = os.environ.get("GEMINI_API_KEY")
+if gemini_key:
+  genai.configure(api_key=gemini_key)
+  ai_model = genai.GenerativeModel("gemini-1.5-flash")
+else:
+  ai_model = None
 
 
 def get_ebay_token():
@@ -33,13 +42,8 @@ def get_ebay_token():
 
 
 def analyze_with_gemini(title, price):
-  gemini_key = os.environ.get("GEMINI_API_KEY")
-  if not gemini_key:
-    return "KI-Schlüssel fehlt."
-
-  # Korrigierter v1-Endpunkt für Gemini 1.5 Flash
-  url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={gemini_key}"
-  headers = {"Content-Type": "application/json"}
+  if not ai_model:
+    return "KI-Schlüssel nicht hinterlegt."
 
   prompt = (
       f"Analysiere dieses eBay-Angebot:\nTitel: '{title}'\nPreis: {price}"
@@ -47,24 +51,19 @@ def analyze_with_gemini(title, price):
       " Auffälligkeiten (Preisfehler, Tippfehler)?\n2. Lohnt sich der Blick"
       " darauf?"
   )
-
-  data = {"contents": [{"parts": [{"text": prompt}]}]}
-
   try:
-    response = requests.post(url, headers=headers, json=data)
-    if response.status_code == 200:
-      result = response.json()
-      text = (
-          result.get("candidates", [{}])[0]
-          .get("content", {})
-          .get("parts", [{}])[0]
-          .get("text", "Keine Antwort")
-      )
-      return text.strip().replace("\n", " ")
+    response = ai_model.generate_content(prompt)
+    if response and response.text:
+      return response.text.strip().replace("\n", " ")
     else:
-      return f"API-Fehler ({response.status_code})"
+      return "Keine Antwort von Gemini erhalten."
   except Exception as e:
-    return f"KI-Fehler: {str(e)}"
+    # Gibt den echten Fehler im GitHub-Log aus, schützt aber die Website vor dem Absturz
+    print(f"Gemini API Warnung bei '{title}': {str(e)}")
+    return (
+        "Live-Analyse temporär nicht verfügbar (API-Limit oder Schlüssel"
+        " prüfen)."
+    )
 
 
 def fetch_ebay_deals(token):
@@ -200,7 +199,7 @@ def generate_html(deals):
 
 
 def main():
-  print("=== DealHunter Direct-API gestartet ===")
+  print("=== DealHunter Safe-Mode gestartet ===")
   token = get_ebay_token()
   if token:
     deals = fetch_ebay_deals(token)
