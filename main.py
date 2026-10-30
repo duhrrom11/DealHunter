@@ -3,7 +3,7 @@ import os
 import google.generativeai as genai
 import requests
 
-# Gemini konfigurieren
+# Gemini mit dem API-Key konfigurieren
 gemini_key = os.environ.get("GEMINI_API_KEY")
 if gemini_key:
   genai.configure(api_key=gemini_key)
@@ -17,7 +17,7 @@ def get_ebay_token():
   client_secret = os.environ.get("EBAY_CLIENT_SECRET")
 
   if not client_id or not client_secret:
-    print("Fehler: eBay API-Schlüssel fehlen!")
+    print("Fehler: eBay API-Schlüssel fehlen in den GitHub Secrets!")
     return None
 
   token_url = "https://api.ebay.com/identity/v1/oauth2/token"
@@ -58,16 +58,13 @@ def analyze_with_gemini(title, price):
     else:
       return "Keine Antwort von Gemini erhalten."
   except Exception as e:
-    # Gibt den echten Fehler im GitHub-Log aus, schützt aber die Website vor dem Absturz
-    print(f"Gemini API Warnung bei '{title}': {str(e)}")
-    return (
-        "Live-Analyse temporär nicht verfügbar (API-Limit oder Schlüssel"
-        " prüfen)."
-    )
+    print(f"Gemini API Fehler bei '{title}': {str(e)}")
+    return "KI-Analyse temporär nicht verfügbar."
 
 
 def fetch_ebay_deals(token):
-  category_ids = ["293", "888"]
+  # Wir scannen wichtige eBay-Kategorien nach den neuesten Inseraten
+  category_ids = ["293", "888"]  # 293 = Elektronik, 888 = Heimwerker
   all_deals = []
 
   headers = {
@@ -170,7 +167,9 @@ def generate_html(deals):
         .btn {{
             display: block; text-align: center; background: var(--accent); color: #1a1d20;
             padding: 10px; border-radius: 6px; text-decoration: none; font-weight: bold;
+            transition: opacity 0.2s;
         }}
+        .btn:hover {{ opacity: 0.9; }}
         footer {{ text-align: center; margin-top: 40px; color: var(--text-muted); font-size: 0.9em; }}
     </style>
 </head>
@@ -195,11 +194,11 @@ def generate_html(deals):
 
   with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
-  print("index.html erfolgreich aktualisiert!")
+  print("index.html erfolgreich mit Live-Daten und KI-Analyse aktualisiert!")
 
 
 def main():
-  print("=== DealHunter Safe-Mode gestartet ===")
+  print("=== DealHunter Final gestartet ===")
   token = get_ebay_token()
   if token:
     deals = fetch_ebay_deals(token)
