@@ -37,8 +37,8 @@ def analyze_with_gemini(title, price):
   if not gemini_key:
     return "KI-Schlüssel fehlt."
 
-  # Direkter REST-API Aufruf für Gemini 1.5 Flash (absolut stabil)
-  url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_key}"
+  # Korrigierter v1-Endpunkt für Gemini 1.5 Flash
+  url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={gemini_key}"
   headers = {"Content-Type": "application/json"}
 
   prompt = (
