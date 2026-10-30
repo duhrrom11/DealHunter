@@ -3,11 +3,11 @@ import os
 import google.generativeai as genai
 import requests
 
-# Gemini mit dem API-Key konfigurieren
+# Gemini mit dem API-Key und dem aktuellen Modell konfigurieren
 gemini_key = os.environ.get("GEMINI_API_KEY")
 if gemini_key:
   genai.configure(api_key=gemini_key)
-  ai_model = genai.GenerativeModel("gemini-1.5-flash")
+  ai_model = genai.GenerativeModel("gemini-3.8-flash")
 else:
   ai_model = None
 
@@ -178,7 +178,7 @@ def generate_html(deals):
         <header>
             <h1>DealHunter</h1>
             <p class="subtitle">Der automatisierte Radar für eBay-Preisfehler & KI-analysierte Deals.</p>
-            <div class="status-badge">🟢 Live aktualisiert via GitHub & Gemini</div>
+            <div class="status-badge">🟢 Live & Running</div>
         </header>
 
         <div class="deals-grid">
@@ -194,11 +194,11 @@ def generate_html(deals):
 
   with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
-  print("index.html erfolgreich mit Live-Daten und KI-Analyse aktualisiert!")
+  print("index.html erfolgreich mit Live-Daten und Gemini-Analyse aktualisiert!")
 
 
 def main():
-  print("=== DealHunter Final gestartet ===")
+  print("=== DealHunter mit Gemini 3.8 Flash gestartet ===")
   token = get_ebay_token()
   if token:
     deals = fetch_ebay_deals(token)
